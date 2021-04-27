@@ -1,2 +1,0 @@
-C:\Users\Arseniy\Documents\GitHub\c-md5-implementation\md5-implementation\Debug\md5-implementation.exe
-C:\Users\Arseniy\Documents\GitHub\c-md5-implementation\src\Debug\md5-implementation.exe
