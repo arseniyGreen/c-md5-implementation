@@ -4,7 +4,7 @@
 
 typedef struct
 {
-    unsigned long int state[4];         /* state (ABCD) */
+    unsigned long int state[4];         /* state (ABCD) ABCD is a buffer, where hash is stored */
     unsigned long int count[2];         /* number of bits, modulo 2^64 (lsb first) */
     unsigned char buffer[64];           /* input buffer */
 } MD5_CTX;
