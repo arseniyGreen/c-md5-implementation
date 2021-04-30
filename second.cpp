@@ -52,6 +52,7 @@ private:
             arrayOfByte[3-i] = (n >> (i * 8));
         return arrayOfByte;
     }
+    std::vector<>
     
     /* Шаг 1 - добавление 1 бита в конец сообщения */
     void appendBit()
