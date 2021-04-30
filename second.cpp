@@ -1,12 +1,17 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <vector>
+
+/* В коде все целочисленные переменные определены типом uint32_t для соответствия стандартам алгортима MD5 */
+
+using std::uint32_t;
 
 class MD5
 {
 private:
     /* K - таблица констант */
-    unsigned int K[64] = { 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
+    uint32_t K[64] = { 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
                            0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
                            0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
                            0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
@@ -23,14 +28,30 @@ private:
                            0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
                            0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
     /* s - величины сдвигов для каждой операции */
-    unsigned int s[64] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+    uint32_t s[64] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                           5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
                           4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                           6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
-    unsigned int a0 = 0x67452301;
-    unsigned int b0 = 0xefcdab89;
-    unsigned int c0 = 0x98badcfe;
-    unsigned int d0 = 0x10325476;
+
+    /* a0, b0, c0, d0 - константы для MD5 */
+    uint32_t a0 = 0x67452301;
+    uint32_t b0 = 0xefcdab89;
+    uint32_t c0 = 0x98badcfe;
+    uint32_t d0 = 0x10325476;
+
+    /* Смещение X влево на C байт */
+    static int rotateLeft(uint32_t x, uint32_t c){
+        return (x << c) | (x >> (32 - c));
+    }
+
+    /* Функция для конвертации int переменной в массив байт */
+    std::vector<unsigned char> intToBytes(uint32_t n)
+    {
+        std::vector<unsigned char> arrayOfByte(4);
+        for(size_t i = 0; i < 4; ++i)
+            arrayOfByte[3-i] = (n >> (i * 8));
+        return arrayOfByte;
+    }
     
     /* Шаг 1 - добавление 1 бита в конец сообщения */
     void appendBit()
@@ -39,12 +60,12 @@ private:
 public:
     void printS()
     {
-        for (int i = 0; i < 64; ++i)
+        for (size_t i = 0; i < 64; ++i)
             std::cout << "s [" << i  << "] = " << s[i] << std::endl; 
     }
     void printK()
     {
-        for (int i = 0; i < 64; ++i)
+        for (size_t i = 0; i < 64; ++i)
             std::cout << "K [" << i  << "] = " << K[i] << std::endl; 
     }
 
@@ -54,7 +75,8 @@ public:
 
 int main(int argc, char const *argv[])
 {
-    MD5 test;
-    test.printK();
+    //MD5 test;
+    //test.printK();
+    std::cout << sizeof(uint32_t) << std::endl;
     return 0;
 }
