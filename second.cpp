@@ -11,6 +11,13 @@ using std::uint32_t;
 class MD5
 {
 private:
+
+    const static int BLOCK_SIZE = 64;
+
+    unsigned char buffer[BLOCK_SIZE];
+    unsigned char digest[16]; // Result
+
+    bool done = false;
     /* K - таблица констант */
     uint32_t K[64] = { 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
                            0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
@@ -59,6 +66,25 @@ private:
         return arrayOfByte;
     }
 
+    /* Функция для перекодирования unsigned char в int32_t. Предполагается, что length % 4 == 0 */
+    static void decode(int32_t out[], const unsigned char input[], int32_t length)
+    {
+        for(size_t i = 0, j = 0; j < length; i++, j += 4)
+            out[i] = ((int32_t)input[j]) | (((int32_t)input[j+1]) << 8) | (((int32_t)input[j+2]) << 16) | (((int32_t)input[j+3]) << 24);
+    }
+
+    /* Функция для перекодирования int32_t в unsigned char. Предполагается, что length % 4 == 0 */
+    static void encode(unsigned char out[], const int32_t input[], int32_t length)
+    {
+        for(int32_t i = 0, j = 0; j < length; i++, j += 4)
+        {
+            out[j] = input[i] & 0xff;
+            out[j + 1] = (input[i] >> 8) & 0xff;
+            out[j + 2] = (input[i] >> 16) & 0xff;
+            out[j + 3] = (input[i] >> 24) & 0xff; 
+        }
+    }
+
     inline int32_t F(int32_t x, int32_t y, int32_t z)
     {
         return x&y | ~x&z;
@@ -93,9 +119,92 @@ private:
         a = rotateLeft(a + I(b,c,d) + x + ac, s) + b;
     }
 
-    /* Шаг 1 - добавление 1 бита в конец сообщения */
-    void appendBit()
-    {}
+    void transform(const unsigned char block[BLOCK_SIZE])
+    {
+        /* A,B,C,D - аккумуляторы */
+        int32_t A = a0;
+        int32_t B = b0;
+        int32_t C = c0;
+        int32_t D = d0;
+
+        int32_t x[16];
+
+        decode(x, block, BLOCK_SIZE);
+
+          /* Round 1 */
+  FF (A, B, C, D, x[ 0], s[11], 0xd76aa478); /* 1 */
+  FF (D, A, B, C, x[ 1], s[12], 0xe8c7b756); /* 2 */
+  FF (C, D, A, B, x[ 2], s[13], 0x242070db); /* 3 */
+  FF (B, C, D, A, x[ 3], s[14], 0xc1bdceee); /* 4 */
+  FF (A, B, C, D, x[ 4], s[11], 0xf57c0faf); /* 5 */
+  FF (D, A, B, C, x[ 5], s[12], 0x4787c62a); /* 6 */
+  FF (C, D, A, B, x[ 6], s[13], 0xa8304613); /* 7 */
+  FF (B, C, D, A, x[ 7], s[14], 0xfd469501); /* 8 */
+  FF (A, B, C, D, x[ 8], s[11], 0x698098d8); /* 9 */
+  FF (D, A, B, C, x[ 9], s[12], 0x8b44f7af); /* 10 */
+  FF (C, D, A, B, x[10], s[13], 0xffff5bb1); /* 11 */
+  FF (B, C, D, A, x[11], s[14], 0x895cd7be); /* 12 */
+  FF (A, B, C, D, x[12], s[11], 0x6b901122); /* 13 */
+  FF (D, A, B, C, x[13], s[12], 0xfd987193); /* 14 */
+  FF (C, D, A, B, x[14], s[13], 0xa679438e); /* 15 */
+  FF (B, C, D, A, x[15], s[14], 0x49b40821); /* 16 */
+ 
+  /* Round 2 */
+  GG (A, B, C, D, x[ 1], s[21], 0xf61e2562); /* 17 */
+  GG (D, A, B, C, x[ 6], s[22], 0xc040b340); /* 18 */
+  GG (C, D, A, B, x[11], s[23], 0x265e5a51); /* 19 */
+  GG (B, C, D, A, x[ 0], s[24], 0xe9b6c7aa); /* 20 */
+  GG (A, B, C, D, x[ 5], s[21], 0xd62f105d); /* 21 */
+  GG (D, A, B, C, x[10], s[22],  0x2441453); /* 22 */
+  GG (C, D, A, B, x[15], s[23], 0xd8a1e681); /* 23 */
+  GG (B, C, D, A, x[ 4], s[24], 0xe7d3fbc8); /* 24 */
+  GG (A, B, C, D, x[ 9], s[21], 0x21e1cde6); /* 25 */
+  GG (D, A, B, C, x[14], s[22], 0xc33707d6); /* 26 */
+  GG (C, D, A, B, x[ 3], s[23], 0xf4d50d87); /* 27 */
+  GG (B, C, D, A, x[ 8], s[24], 0x455a14ed); /* 28 */
+  GG (A, B, C, D, x[13], s[21], 0xa9e3e905); /* 29 */
+  GG (D, A, B, C, x[ 2], s[22], 0xfcefa3f8); /* 30 */
+  GG (C, D, A, B, x[ 7], s[23], 0x676f02d9); /* 31 */
+  GG (B, C, D, A, x[12], s[24], 0x8d2a4c8a); /* 32 */
+ 
+  /* Round 3 */
+  HH (A, B, C, D, x[ 5], s[31], 0xfffa3942); /* 33 */
+  HH (D, A, B, C, x[ 8], s[32], 0x8771f681); /* 34 */
+  HH (C, D, A, B, x[11], s[33], 0x6d9d6122); /* 35 */
+  HH (B, C, D, A, x[14], s[34], 0xfde5380c); /* 36 */
+  HH (A, B, C, D, x[ 1], s[31], 0xa4beea44); /* 37 */
+  HH (D, A, B, C, x[ 4], s[32], 0x4bdecfa9); /* 38 */
+  HH (C, D, A, B, x[ 7], s[33], 0xf6bb4b60); /* 39 */
+  HH (B, C, D, A, x[10], s[34], 0xbebfbc70); /* 40 */
+  HH (A, B, C, D, x[13], s[31], 0x289b7ec6); /* 41 */
+  HH (D, A, B, C, x[ 0], s[32], 0xeaa127fa); /* 42 */
+  HH (C, D, A, B, x[ 3], s[33], 0xd4ef3085); /* 43 */
+  HH (B, C, D, A, x[ 6], s[34],  0x4881d05); /* 44 */
+  HH (A, B, C, D, x[ 9], s[31], 0xd9d4d039); /* 45 */
+  HH (D, A, B, C, x[12], s[32], 0xe6db99e5); /* 46 */
+  HH (C, D, A, B, x[15], s[33], 0x1fa27cf8); /* 47 */
+  HH (B, C, D, A, x[ 2], s[34], 0xc4ac5665); /* 48 */
+ 
+  /* Round 4 */
+  II (A, B, C, D, x[ 0], s[41], 0xf4292244); /* 49 */
+  II (D, A, B, C, x[ 7], s[42], 0x432aff97); /* 50 */
+  II (C, D, A, B, x[14], s[43], 0xab9423a7); /* 51 */
+  II (B, C, D, A, x[ 5], s[44], 0xfc93a039); /* 52 */
+  II (A, B, C, D, x[12], s[41], 0x655b59c3); /* 53 */
+  II (D, A, B, C, x[ 3], s[42], 0x8f0ccc92); /* 54 */
+  II (C, D, A, B, x[10], s[43], 0xffeff47d); /* 55 */
+  II (B, C, D, A, x[ 1], s[44], 0x85845dd1); /* 56 */
+  II (A, B, C, D, x[ 8], s[41], 0x6fa87e4f); /* 57 */
+  II (D, A, B, C, x[15], s[42], 0xfe2ce6e0); /* 58 */
+  II (C, D, A, B, x[ 6], s[43], 0xa3014314); /* 59 */
+  II (B, C, D, A, x[13], s[44], 0x4e0811a1); /* 60 */
+  II (A, B, C, D, x[ 4], s[41], 0xf7537e82); /* 61 */
+  II (D, A, B, C, x[11], s[42], 0xbd3af235); /* 62 */
+  II (C, D, A, B, x[ 2], s[43], 0x2ad7d2bb); /* 63 */
+  II (B, C, D, A, x[ 9], s[44], 0xeb86d391); /* 64 */
+
+    }
+
 
 public:
 
@@ -103,6 +212,8 @@ public:
     MD5(const std::string &text)
     {
         initialize();
+        update(text.c_str(), text.length());
+        
     }
 
     void update(const unsigned char *buf, uint32_t length);
@@ -111,15 +222,14 @@ public:
     std::string hexdigest() const;
     friend std::ostream& operator<<(std::ostream&, MD5 md5);
 
-    void printS()
+    MD5 &finalize()
     {
-        for (size_t i = 0; i < 64; ++i)
-            std::cout << "s [" << i  << "] = " << s[i] << std::endl; 
-    }
-    void printK()
-    {
-        for (size_t i = 0; i < 64; ++i)
-            std::cout << "K [" << i  << "] = " << K[i] << std::endl; 
+        if(!done)
+        {
+        //Save number of bits
+        unsigned char bits[8];
+        
+        }        
     }
 
 };
