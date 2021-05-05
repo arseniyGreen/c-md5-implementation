@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstdio>
 #include <cmath>
 #include <vector>
 
@@ -39,8 +40,13 @@ private:
     uint32_t c0 = 0x98badcfe;
     uint32_t d0 = 0x10325476;
 
+    void initialize()
+    {
+        
+    }
+
     /* Смещение X влево на C байт */
-    static int rotateLeft(uint32_t x, uint32_t c){
+    inline int32_t rotateLeft(uint32_t x, uint32_t c){
         return (x << c) | (x >> (32 - c));
     }
 
@@ -52,13 +58,59 @@ private:
             arrayOfByte[3-i] = (n >> (i * 8));
         return arrayOfByte;
     }
-    std::vector<>
-    
+
+    inline int32_t F(int32_t x, int32_t y, int32_t z)
+    {
+        return x&y | ~x&z;
+    }
+    inline int32_t G(int32_t x, int32_t y, int32_t z)
+    {
+        return x&z | x&~z;
+    }
+    inline int32_t H(int32_t x, int32_t y, int32_t z)
+    {
+        return x^y^z;
+    }
+    inline int32_t I(int32_t x, int32_t y, int32_t z)
+    {
+        return y ^ (x | ~z);
+    }
+
+    inline void FF(int32_t &a, int32_t b, int32_t c, int32_t d, int32_t x, int32_t s, int32_t ac)
+    {
+        a = rotateLeft(a + F(b,c,d) + x + ac, s) + b;
+    }
+    inline void GG(int32_t &a, int32_t b, int32_t c, int32_t d, int32_t x, int32_t s, int32_t ac)
+    {
+        a = rotateLeft(a + G(b,c,d) + x + ac, s) + b;
+    }
+    inline void HH(int32_t &a, int32_t b, int32_t c, int32_t d, int32_t x, int32_t s, int32_t ac)
+    {
+        a = rotateLeft(a + H(b,c,d) + x + ac, s) + b;
+    }
+    inline void II(int32_t &a, int32_t b, int32_t c, int32_t d, int32_t x, int32_t s, int32_t ac)
+    {
+        a = rotateLeft(a + I(b,c,d) + x + ac, s) + b;
+    }
+
     /* Шаг 1 - добавление 1 бита в конец сообщения */
     void appendBit()
     {}
 
 public:
+
+    MD5();
+    MD5(const std::string &text)
+    {
+        initialize();
+    }
+
+    void update(const unsigned char *buf, uint32_t length);
+    void update(const char *buf, uint32_t length);
+
+    std::string hexdigest() const;
+    friend std::ostream& operator<<(std::ostream&, MD5 md5);
+
     void printS()
     {
         for (size_t i = 0; i < 64; ++i)
