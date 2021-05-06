@@ -18,6 +18,7 @@ private:
     unsigned char buffer[BLOCK_SIZE];
     unsigned char digest[16]; // Result
     int32_t state[4];
+    int32_t count[2];
 
     bool done = false;
 
@@ -43,6 +44,11 @@ private:
                           5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
                           4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                           6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
+
+    unsigned char padding[64] = {
+    0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     /* a0, b0, c0, d0 - константы для MD5 */
     uint32_t a0 = 0x67452301;
@@ -226,10 +232,31 @@ public:
     }
 
     /* Метод для обновления операции. Продолжает процесс хеширования, передавая следующий блок сообщения */
-    void update(const unsigned char *buf, uint32_t length)
+    void update(const unsigned char input[], uint32_t length)
     {
-        /* */
-        int32_t 
+        /* Count number of bytes % 64 */
+        int32_t index = count[0] / 8 % BLOCK_SIZE;
+
+        /* Update number of bits */
+        if((count[0] += (length << 3)) < (length << 3))
+            count[1]++;
+        count[1] += (length >> 29);
+
+        /* Number of bytes we need to fill in buffer */
+        int32_t firstPart = 64 - index;
+
+        /* Transform as many times as possible */
+        if(length >= firstPart)
+        {
+            /* Fill buffer, than transform */
+            memcpy(&buffer[index], input, firstPart);
+            transform(buffer);
+
+            /* Transform chunks of blocksize(64 bytes) */
+            for(size_t i = firstPart; i + BLOCK_SIZE <= length; i += BLOCK_SIZE)
+                transform(&input[i]);
+            index = 0;
+        }
 
     }
     void update(const char *buf, uint32_t length);
@@ -243,8 +270,25 @@ public:
         {
         //Save number of bits
         unsigned char bits[8];
+        encode(bits, count, 8);
+
+        /* Pad out to 56 mod 64*/
+        int32_t index = count[0] / 8 % 64;
+        int32_t padLength = (index < 56) ? (56 - index) : (120 - index);
+        update(padding, padLength);
+
+        /* Append length (before padding) */
+        update(bits, 8);
         
-        }        
+        /* Store state in digest */
+        encode(digest, state, 16);
+
+        memset(buffer, 0, sizeof(buffer));
+        memset(count, 0, sizeof(count));
+
+        done = true;
+        }
+        return *this;        
     }
 
 };
