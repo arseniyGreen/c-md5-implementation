@@ -244,6 +244,7 @@ public:
 
         /* Number of bytes we need to fill in buffer */
         int32_t firstPart = 64 - index;
+        size_t i = 0;
 
         /* Transform as many times as possible */
         if(length >= firstPart)
@@ -253,15 +254,21 @@ public:
             transform(buffer);
 
             /* Transform chunks of blocksize(64 bytes) */
-            for(size_t i = firstPart; i + BLOCK_SIZE <= length; i += BLOCK_SIZE)
+            for(i = firstPart; i + BLOCK_SIZE <= length; i += BLOCK_SIZE)
                 transform(&input[i]);
             index = 0;
         }
+        else
+            i = 0;
 
+        /* Remaining buffer input */
+        memcpy(&buffer[index], &input[i], length - i);
     }
-    void update(const char *buf, uint32_t length);
+    void update(const char input[], uint32_t length)
+    {
+        update((const unsigned char*)input, length);
+    }
 
-    std::string hexdigest() const;
     friend std::ostream& operator<<(std::ostream&, MD5 md5);
 
     MD5 &finalize()
@@ -291,14 +298,42 @@ public:
         return *this;        
     }
 
+    std::string hexdigest() const
+    {
+        if(!done)
+            return "";
+
+        char buf[33];
+        for(size_t i = 0; i < 16; i++)
+            sprintf(buf + i*2, "%02x", digest[i]);
+        buf[32] = 0;
+
+        return std::string(buf);
+    }
+
+
+
 };
 
+std::ostream& operator<<(std::ostream& out, MD5 md5)
+{
+    return out << md5.hexdigest();
+}
+
+std::string md5(const std::string str)
+{
+    MD5 md5 = MD5(str);
+    return md5.hexdigest();
+}
 
 
 int main(int argc, char const *argv[])
 {
     //MD5 test;
     //test.printK();
-    std::cout << sizeof(uint32_t) << std::endl;
+    //std::cout << sizeof(uint32_t) << std::endl;
+
+    std::cout << "MD5 of 'grape' is : " << md5("grape") << std::endl;
+
     return 0;
 }
