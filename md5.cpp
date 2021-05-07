@@ -1,11 +1,10 @@
 #include <iostream>
 #include <string>
-#include <cstdio>
-#include <cmath>
-#include <vector>
-#include <string.h>
+#include <cstring>
 
 #pragma warning( disable : 4996 ) /* Disable "unsafe sprintf" warning */
+
+/* Определение констант для преобразований */
 
 #define S11 7
 #define S12 12
@@ -313,7 +312,7 @@ std::string md5(const std::string str)
     MD5 md5 = MD5(str);
     return md5.hexdigest();
 }
-
+/* End of class implementation */
 
 int main(int argc, char const* argv[])
 {
