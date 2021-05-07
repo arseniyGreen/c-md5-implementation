@@ -312,11 +312,106 @@ std::string md5(const std::string str)
     MD5 md5 = MD5(str);
     return md5.hexdigest();
 }
-/* End of class implementation */
+/* End of MD5 class implementation */
+
+/* Класс односвязного списка 
+    Реализуются функции:
+    1)Добавление
+    2)Поиск
+    3)Удаление */
+
+class List
+{
+private:
+    /* Класс узла содержит данные(строка, её хеш), а также указатель на следующий узел */
+    class Node /* Узел данных */
+    {
+        private:
+            /* Data for this node */
+            std::string str;
+            std::string hash;
+
+        public:
+            Node *ptr; /* Указатель на следующий узел */
+            Node(std::string str_, Node *pNext)
+            {
+                this->str = str_;
+                this->hash = md5(str_);
+                this->ptr = pNext;
+            }
+            ~Node(){ delete &str; delete &hash; }
+
+            void setString(std::string str_){ this->str = str_; }
+            std::string getString(){ return this->str; }
+
+            /* Для инициализации */
+            void setHash(std::string hash_){ this->hash = hash_; }
+            std::string getHash(){ return this->hash; }
+    };
+
+    Node *head; /* Первый элемент */
+    size_t nodeCnt;
+
+public:
+    List()
+    {
+        head = nullptr;
+        nodeCnt = 0;
+    }
+    ~List(){}
+
+    void addHash(std::string data)
+    {
+        if(head == nullptr)
+        {
+            head = new Node(data);
+        }
+        else
+        {
+            Node *current = this->head;
+            while(current->ptr != nullptr)
+            {
+                current = current->ptr;
+            }
+            current->ptr = new Node(data);
+        }
+    }
+    void searchHash()
+    {
+        /* Code */
+    }
+
+    void deleteHash()
+    {
+        /* Code */
+    }
+
+    void listAll()
+    {
+
+    }
+};
 
 int main(int argc, char const* argv[])
 {
-    std::cout << "MD5 of 'lesik' is : " << md5("lesik") << std::endl;
+    List hashTable;
+    
+    //size_t x = hashTable.getSize();
+    char n;
+    //while(true)
+    //{
+    //    std::cout << "Welcome to MD5 hashing program.\nChoose an option: \n";
+    //    std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n";
+    //    std::cout << md5("lesik");
+    //    std::cin >> n; 
+    //}
 
     return 0;
 }
+
+
+/* 
+
+string + md5("string");
+
+*/
