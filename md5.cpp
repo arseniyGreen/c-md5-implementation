@@ -238,6 +238,7 @@ public:
     {
         initialize();
         update(text.c_str(), text.length());
+        finalize();
     }
 
     /* Метод для обновления операции. Продолжает процесс хеширования, передавая следующий блок сообщения */
@@ -342,7 +343,7 @@ int main(int argc, char const* argv[])
     //test.printK();
     //std::cout << sizeof(uint32_t) << std::endl;
 
-    std::cout << "MD5 of 'grape' is : " << md5("grape") << std::endl;
+    std::cout << "MD5 of 'asdf' is : " << md5("asdf") << std::endl;
 
     return 0;
 }
