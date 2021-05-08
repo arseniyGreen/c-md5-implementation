@@ -404,20 +404,22 @@ public:
         }
     }
 
+    void deleteFirst(Node *firstNode)
+    {
+
+    }
+
     void deleteHash(size_t idx, Node *firstNode)
     {
         if(firstNode == nullptr) return;
-        Node *ptr = firstNode;
 
         if(idx == 1) /* Удаляем head узел */
         {
-            Node *tmp = new Node;
-            tmp = head;
-            head = head->pNext;
-            delete tmp;
+            Node *p = firstNode;
+            p = firstNode;
+            firstNode = firstNode->pNext;
+            delete p;
         }
-        if(ptr == nullptr || ptr->pNext == nullptr)
-            return;
 
         Node *current = firstNode;
         Node *prev = new Node;
@@ -447,7 +449,9 @@ public:
 int main(int argc, char const* argv[])
 {
     List hashTable;
-    hashTable.addHash("lesik");
+
+    /* Tests */
+    /*hashTable.addHash("lesik");
     hashTable.addHash("grape");
     hashTable.addHash("asdf");
     hashTable.addHash("qwerty");
@@ -470,23 +474,38 @@ int main(int argc, char const* argv[])
     hashTable.deleteHash(1, hashTable.getHead());
     hashTable.listAll(hashTable.getHead());
 
-    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
+    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl; */
 
-    char n;
-    //while(true)
-    //{
-    //    std::cout << "Welcome to MD5 hashing program.\nChoose an option: \n";
-    //    std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n";
-    //    std::cout << md5("lesik");
-    //    std::cin >> n; 
-    //}
+    int n;
+    while(true)
+    {
+        std::string str = "";
+        std::cout << "MD5 hashing program.\nChoose an option: \n";
+        std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n";
+        std::cin >> n;
+        
+        if(n == 1)
+        {
+            std::cout << "Enter string to hash : "; std::getline(std::cin, str);
+            hashTable.addHash(str);
+        }
+        else if(n == 2)
+        {
+            /* Code */
+        }
+        else if(n == 3)
+        {
+            hashTable.listAll(hashTable.getHead());
+        }
+        else if(n == 4)
+        {
+            /* Code */
+        }
+        else
+        {
+            /* Code */
+        }
+    }
 
     return 0;
 }
-
-
-/* 
-
-string + md5("string");
-
-*/
