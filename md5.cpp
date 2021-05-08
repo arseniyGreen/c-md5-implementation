@@ -368,6 +368,7 @@ public:
     ~List(){}
 
     Node *getHead(){ return this->head; }
+    size_t getSize() { return this->nodeCnt; }
 
     void addHash(std::string data)
     {
@@ -403,9 +404,31 @@ public:
         }
     }
 
-    void deleteHash()
+    void deleteHash(size_t idx, Node *firstNode)
     {
-        /* Code */
+        if(firstNode == nullptr) return;
+        Node *ptr = firstNode;
+
+        if(idx == 1) /* Удаляем head узел */
+        {
+            Node *tmp = new Node;
+            tmp = head;
+            head = head->pNext;
+            delete tmp;
+        }
+        if(ptr == nullptr || ptr->pNext == nullptr)
+            return;
+
+        Node *current = firstNode;
+        Node *prev = new Node;
+        for(size_t i = 1; i < idx; i++)
+        {
+            prev = current;
+            current = current->pNext;
+        }
+        prev->pNext = current->pNext;
+
+        nodeCnt--;
     }
 
     void listAll(Node *firstNode)
@@ -427,8 +450,27 @@ int main(int argc, char const* argv[])
     hashTable.addHash("lesik");
     hashTable.addHash("grape");
     hashTable.addHash("asdf");
+    hashTable.addHash("qwerty");
+    hashTable.addHash("mystr");
     hashTable.listAll(hashTable.getHead());
     hashTable.searchHash("98a6ea6544be6695815c9203bd96b131", hashTable.getHead());
+
+    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
+
+    hashTable.deleteHash(2, hashTable.getHead());
+    hashTable.listAll(hashTable.getHead());
+
+    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
+
+    hashTable.deleteHash(4, hashTable.getHead());
+    hashTable.listAll(hashTable.getHead());
+
+    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
+
+    hashTable.deleteHash(1, hashTable.getHead());
+    hashTable.listAll(hashTable.getHead());
+
+    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
 
     char n;
     //while(true)
