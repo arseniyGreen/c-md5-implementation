@@ -332,14 +332,20 @@ private:
             std::string hash;
 
         public:
-            Node *ptr; /* Указатель на следующий узел */
-            Node(std::string str_, Node *pNext)
+            Node *pNext; /* Указатель на следующий узел */
+            Node(){}
+            Node(std::string str_, Node *pNext_)
             {
                 this->str = str_;
                 this->hash = md5(str_);
-                this->ptr = pNext;
+                this->pNext = pNext_;
             }
             ~Node(){ delete &str; delete &hash; }
+
+            void getData()
+            {
+                std::cout << "string : " << this->str << "\thash : " << this->hash << std::endl;
+            }
 
             void setString(std::string str_){ this->str = str_; }
             std::string getString(){ return this->str; }
@@ -350,7 +356,8 @@ private:
     };
 
     Node *head; /* Первый элемент */
-    size_t nodeCnt;
+    Node *tail; /* Последний элемент */
+    size_t nodeCnt; /* Количество узлов */
 
 public:
     List()
@@ -360,21 +367,26 @@ public:
     }
     ~List(){}
 
+    Node *getHead(){ return this->head; }
+
     void addHash(std::string data)
     {
+        Node *tmp = new Node();
+        tmp->setString(data);
+        tmp->setHash(md5(data));
+        tmp->pNext = nullptr;
+
         if(head == nullptr)
         {
-            head = new Node(data);
+            head = tmp;
+            tail = tmp;
         }
         else
         {
-            Node *current = this->head;
-            while(current->ptr != nullptr)
-            {
-                current = current->ptr;
-            }
-            current->ptr = new Node(data);
+            tail->pNext = tmp;
+            tail = tail->pNext;
         }
+        nodeCnt++;
     }
     void searchHash()
     {
@@ -386,17 +398,26 @@ public:
         /* Code */
     }
 
-    void listAll()
+    void listAll(Node *firstNode)
     {
-
+        Node *ptr = firstNode;
+        size_t i = 0;
+        while(ptr != nullptr)
+        {
+            i++;
+            std::cout << "[" << i << "] = "; ptr->getData(); 
+            ptr = ptr->pNext;
+        }
     }
 };
 
 int main(int argc, char const* argv[])
 {
     List hashTable;
-    
-    //size_t x = hashTable.getSize();
+    hashTable.addHash("grape");
+    hashTable.addHash("asdf");
+    hashTable.listAll(hashTable.getHead());
+
     char n;
     //while(true)
     //{
