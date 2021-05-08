@@ -388,9 +388,19 @@ public:
         }
         nodeCnt++;
     }
-    void searchHash()
+    void searchHash(std::string hash_, Node *firstNode)
     {
-        /* Code */
+        Node *ptr = firstNode;
+        size_t i = 0;
+        while(ptr != nullptr)
+        {
+            i++;
+            if(ptr->getHash() == hash_) { std::cout << "Hash found on " << i << " index. String is '" << ptr->getString() << "'" << std::endl; break;}
+            else
+                ptr = ptr->pNext;
+            if(ptr == nullptr) 
+                std::cout << "No proper hash found.\n";
+        }
     }
 
     void deleteHash()
@@ -405,7 +415,7 @@ public:
         while(ptr != nullptr)
         {
             i++;
-            std::cout << "[" << i << "] = "; ptr->getData(); 
+            std::cout << "[" << i << "] "; ptr->getData(); 
             ptr = ptr->pNext;
         }
     }
@@ -414,9 +424,11 @@ public:
 int main(int argc, char const* argv[])
 {
     List hashTable;
+    hashTable.addHash("lesik");
     hashTable.addHash("grape");
     hashTable.addHash("asdf");
     hashTable.listAll(hashTable.getHead());
+    hashTable.searchHash("98a6ea6544be6695815c9203bd96b131", hashTable.getHead());
 
     char n;
     //while(true)
