@@ -19,7 +19,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![GPLv3 License][license-shield]][license-url]
+<!--[![GPLv3 License][license-shield]][license-url] -->
 
   <h3 align="center">Message Digest 5 Algorithm C++ Implementation</h3>
 
