@@ -387,7 +387,24 @@ public:
         head = nullptr;
         nodeCnt = 0;
     }
-    ~List(){}
+    ~List()
+    {
+        Node *ptr = this->head;
+        if(nodeCnt == 0)
+        {
+            delete head;
+        }
+        else
+        {
+            for (size_t i = 0; i < nodeCnt; i++)
+            {
+                free(ptr);
+                ptr = ptr->pNext;
+            }
+        }
+        free(ptr);
+        delete ptr;
+    }
 
     Node *getHead(){ return this->head; }
     size_t getSize() { return this->nodeCnt; }
