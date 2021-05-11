@@ -392,6 +392,7 @@ public:
         Node *ptr = this->head;
         if(nodeCnt == 0)
         {
+            free(head);
             delete head;
         }
         else
