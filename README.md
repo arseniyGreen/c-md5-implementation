@@ -86,6 +86,6 @@ Distributed under the GPLv3 License. See `LICENSE` for more information.
 [issues-shield]: https://img.shields.io/github/issues/arseniyGreen/c-md5-implementation.svg?style=for-the-badge
 [issues-url]: https://github.com/arseniyGreen/c-md5-implementation/issues
 [license-shield]: https://img.shields.io/github/license/arseniyGreen/c-md5-implementation.svg?style=for-the-badge
-[license-url]: https://github.com/arseniyGreen/c-md5-implementation/blob/master/LICENSE.txt
+[license-url]: https://github.com/arseniyGreen/c-md5-implementation/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [product-screenshot]: images/screenshot.png
