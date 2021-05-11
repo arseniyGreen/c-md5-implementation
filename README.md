@@ -21,7 +21,7 @@
 [![Issues][issues-shield]][issues-url]
 <!--[![GPLv3 License][license-shield]][license-url] -->
 
-  <h3 align="center">Message Digest 5 Algorithm C++ Implementation</h3>
+  <h2 align="center">Message Digest 5 Algorithm C++ Implementation</h2>
 
   <p align="center">
     MD5 algorithm implementation using C++ language. All hashes can be stored at linked list. 
