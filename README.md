@@ -19,17 +19,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
-
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+[![GPLv3 License][license-shield]][license-url]
 
   <h3 align="center">Message Digest 5 Algorithm C++ Implementation</h3>
 
@@ -69,24 +59,6 @@
    g++ md5.cpp && ./a.out
    ```
 
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
-
-
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -99,7 +71,7 @@ See the [open issues](https://github.com/othneildrew/Best-README-Template/issues
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the GPLv3 License. See `LICENSE` for more information.
 
 
 
@@ -116,5 +88,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [license-shield]: https://img.shields.io/github/license/arseniyGreen/c-md5-implementation.svg?style=for-the-badge
 [license-url]: https://github.com/arseniyGreen/c-md5-implementation/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png

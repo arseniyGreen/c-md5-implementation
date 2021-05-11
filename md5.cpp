@@ -500,10 +500,5 @@ int main(int argc, char const* argv[])
     hashTable.searchHash("967d903024528d2cf3e93513e15525b0", hashTable.getHead());
     hashTable.searchHash("randomhash", hashTable.getHead());
 
-    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
-
-
-    int n;
-
     return 0;
 }
