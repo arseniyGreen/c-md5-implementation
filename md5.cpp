@@ -491,13 +491,14 @@ int main(int argc, char const* argv[])
     List hashTable;
 
     /* Tests */
-    hashTable.addHash("lesik");
+    hashTable.addHash("hash_to_find");
     hashTable.addHash("grape");
     hashTable.addHash("asdf");
     hashTable.addHash("qwerty");
     hashTable.addHash("mystr");
     hashTable.listAll(hashTable.getHead());
-    hashTable.searchHash("98a6ea6544be6695815c9203bd96b131", hashTable.getHead());
+    hashTable.searchHash("967d903024528d2cf3e93513e15525b0", hashTable.getHead());
+    hashTable.searchHash("randomhash", hashTable.getHead());
 
     std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
 
