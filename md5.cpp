@@ -2,6 +2,13 @@
 #include <string>
 #include <cstring>
 
+#ifdef __unix__
+    #define CLEAR system("clear")
+
+#elif defined(_WIN32) || defined(WIN32)
+    #define CLEAR system("cls")
+#endif
+
 #pragma warning( disable : 4996 ) /* Disable "unsafe sprintf" warning */
 
 /* Определение констант для преобразований */
@@ -446,9 +453,80 @@ public:
     }
 };
 
+class Menu
+{
+private:
+    friend class List;
+    friend class MD5;
+
+    List HashTable;
+    std::string str;
+    size_t choice;
+
+public:
+    Menu(){}
+    ~Menu(){}
+
+    void mainMenu()
+    {
+        std::cout << "MD5 hashing program.\nChoose an option: \n";
+        std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n";
+        std::cin >> choice; std::cout << std::endl;
+        switch(choice)
+        {
+            case 1:
+                makeNewHash();
+                break;
+            case 2:
+                findStr();
+                break;
+            case 3:
+                listAll();
+                break;
+            case 4:
+                delHash();
+                break;
+            default:
+                std::cout << "Incorrect input!" << std::endl;
+                break;
+        }
+    }
+    void makeNewHash()
+    {
+        CLEAR;
+        std::cout << "Enter string to add : "; std::cin >> str;
+        HashTable.addHash(str);
+        std::cout << "Added!\n";
+        mainMenu();
+    }
+    void findStr()
+    {
+        CLEAR;
+        std::cout << "Enter hash to find : "; std::cin >> str;
+        HashTable.searchHash(str, HashTable.getHead());
+        mainMenu();
+    }
+    void listAll()
+    {
+        CLEAR;
+        HashTable.listAll(HashTable.getHead());
+        mainMenu();
+    }
+    void delHash()
+    {
+        CLEAR;
+        size_t index;
+        std::cout << "Enter index to delete : "; std::cin >> index;
+        HashTable.deleteHash(index, HashTable.getHead());
+        mainMenu();
+    }
+};
+
 int main(int argc, char const* argv[])
 {
     List hashTable;
+    int n;
+    char back;
 
     /* Tests */
     /*hashTable.addHash("lesik");
@@ -476,36 +554,8 @@ int main(int argc, char const* argv[])
 
     std::cout << std::endl << hashTable.getSize() << std::endl << std::endl; */
 
-    int n;
-    while(true)
-    {
-        std::string str = "";
-        std::cout << "MD5 hashing program.\nChoose an option: \n";
-        std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n";
-        std::cin >> n;
-        
-        if(n == 1)
-        {
-            std::cout << "Enter string to hash : "; std::getline(std::cin, str);
-            hashTable.addHash(str);
-        }
-        else if(n == 2)
-        {
-            /* Code */
-        }
-        else if(n == 3)
-        {
-            hashTable.listAll(hashTable.getHead());
-        }
-        else if(n == 4)
-        {
-            /* Code */
-        }
-        else
-        {
-            /* Code */
-        }
-    }
+    Menu menu;
+    menu.mainMenu();
 
     return 0;
 }
