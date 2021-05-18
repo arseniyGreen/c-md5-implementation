@@ -47,10 +47,9 @@ private:
 
     bool done = false;
 
-    /* 
-    Таблица констант для преобразований
-    K[i] = floor(2^32 * abs(sin(i + 1)))
-     */
+     
+    /*  Таблица констант для преобразований
+        K[i] = floor(2^32 * abs(sin(i + 1)))  */
     uint32_t K[64] = { 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
                        0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
                        0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -447,13 +446,8 @@ public:
             else
                 ptr = ptr->pNext;
             if(ptr == nullptr) 
-                std::cout << "No proper hash found.\n";
+                std::cerr << "No proper hash found.\n";
         }
-    }
-
-    void deleteFirst(Node *firstNode)
-    {
-
     }
 
     void deleteHash(size_t idx, Node *firstNode)
@@ -462,10 +456,9 @@ public:
 
         if(idx == 1) /* Удаляем head узел */
         {
-            Node *p = firstNode;
-            p = firstNode;
-            firstNode = firstNode->pNext;
-            delete p;
+            Node *newHead = firstNode->pNext;
+            this->head = newHead;
+            free(firstNode);
         }
 
         Node *current = firstNode;
@@ -481,14 +474,21 @@ public:
     }
 
     void listAll(Node *firstNode)
-    {
-        Node *ptr = firstNode;
-        size_t i = 0;
-        while(ptr != nullptr)
+    {   
+        if(nodeCnt == 0)
         {
-            i++;
-            std::cout << "[" << i << "] "; ptr->getData(); 
-            ptr = ptr->pNext;
+            std::cerr << "List is empty!\n";
+        }
+        else
+        {
+            Node *ptr = firstNode;
+            size_t i = 0;
+            while(ptr != nullptr)
+            {
+                i++;
+                std::cout << "[" << i << "] "; ptr->getData(); 
+                ptr = ptr->pNext;
+            }
         }
     }
 };
@@ -501,7 +501,7 @@ private:
 
     List HashTable;
     std::string str;
-    size_t choice;
+    short choice;
 
 public:
     Menu(){}
@@ -510,7 +510,7 @@ public:
     void mainMenu()
     {
         std::cout << "MD5 hashing program.\nChoose an option: \n";
-        std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n";
+        std::cout << "[1] Make new hash. \n[2] Find string by hash.\n[3] List all hashes.\n[4] Delete hash from list.\n[5] Exit\n";
         std::cin >> choice; std::cout << std::endl;
         switch(choice)
         {
@@ -525,6 +525,8 @@ public:
                 break;
             case 4:
                 delHash();
+                break;
+            case 5:
                 break;
             default:
                 std::cout << "Incorrect input!" << std::endl;
@@ -564,43 +566,7 @@ public:
 
 int main(int argc, char const* argv[])
 {
-    List hashTable;
-    int n;
-    char back;
-
-    /* Tests */
-    hashTable.addHash("hash_to_find");
-    hashTable.addHash("grape");
-    hashTable.addHash("asdf");
-    hashTable.addHash("qwerty");
-    hashTable.addHash("mystr");
-    hashTable.listAll(hashTable.getHead());
-<<<<<<< HEAD
-    hashTable.searchHash("98a6ea6544be6695815c9203bd96b131", hashTable.getHead());
-
-    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
-
-    hashTable.deleteHash(2, hashTable.getHead());
-    hashTable.listAll(hashTable.getHead());
-
-    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
-
-    hashTable.deleteHash(4, hashTable.getHead());
-    hashTable.listAll(hashTable.getHead());
-
-    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl;
-
-    hashTable.deleteHash(1, hashTable.getHead());
-    hashTable.listAll(hashTable.getHead());
-
-    std::cout << std::endl << hashTable.getSize() << std::endl << std::endl; */
-
     Menu menu;
     menu.mainMenu();
-=======
-    hashTable.searchHash("967d903024528d2cf3e93513e15525b0", hashTable.getHead());
-    hashTable.searchHash("randomhash", hashTable.getHead());
->>>>>>> d9ee56d8d00343fa431df547d34a9b28b7ebad9c
-
     return 0;
 }
