@@ -355,7 +355,7 @@ private:
     class Node /* Узел данных */
     {
         private:
-            /* Data for this node */
+            /* Данные для текущего узла */
             std::string str;
             std::string hash;
 
@@ -395,22 +395,21 @@ public:
     }
     ~List()
     {
-        Node *ptr = this->head;
         if(nodeCnt == 0)
         {
-            free(head);
             delete head;
         }
         else
         {
-            for (size_t i = 0; i < nodeCnt; i++)
+            Node *ptr = head;
+            size_t i = 1;
+            while(i < nodeCnt - 1   )
             {
-                free(ptr);
-                ptr = ptr->pNext;
+                delete ptr->pNext;
+                i++;
             }
+            delete ptr;
         }
-        free(ptr);
-        delete ptr;
     }
 
     Node *getHead(){ return this->head; }
@@ -435,9 +434,9 @@ public:
         }
         nodeCnt++;
     }
-    void searchHash(std::string hash_, Node *firstNode)
+    void searchHash(std::string hash_)
     {
-        Node *ptr = firstNode;
+        Node *ptr = head;
         size_t i = 0;
         while(ptr != nullptr)
         {
@@ -450,18 +449,17 @@ public:
         }
     }
 
-    void deleteHash(size_t idx, Node *firstNode)
+    void deleteHash(size_t idx)
     {
-        if(firstNode == nullptr) return;
+        if(head == nullptr) return;
 
         if(idx == 1) /* Удаляем head узел */
         {
-            Node *newHead = firstNode->pNext;
+            Node *newHead = head->pNext;
             this->head = newHead;
-            free(firstNode);
         }
 
-        Node *current = firstNode;
+        Node *current = head;
         Node *prev = new Node;
         for(size_t i = 1; i < idx; i++)
         {
@@ -473,7 +471,7 @@ public:
         nodeCnt--;
     }
 
-    void listAll(Node *firstNode)
+    void listAll()
     {   
         if(nodeCnt == 0)
         {
@@ -481,7 +479,7 @@ public:
         }
         else
         {
-            Node *ptr = firstNode;
+            Node *ptr = head;
             size_t i = 0;
             while(ptr != nullptr)
             {
@@ -507,6 +505,8 @@ public:
     Menu(){}
     ~Menu(){}
 
+    bool exit = false;
+
     void mainMenu()
     {
         std::cout << "MD5 hashing program.\nChoose an option: \n";
@@ -527,9 +527,10 @@ public:
                 delHash();
                 break;
             case 5:
+                exit = true;
                 break;
             default:
-                std::cout << "Incorrect input!" << std::endl;
+                std::cerr << "Incorrect input!" << std::endl;
                 break;
         }
     }
@@ -539,34 +540,31 @@ public:
         std::cout << "Enter string to add : "; std::cin >> str;
         HashTable.addHash(str);
         std::cout << "Added!\n";
-        mainMenu();
     }
     void findStr()
     {
         CLEAR;
         std::cout << "Enter hash to find : "; std::cin >> str;
-        HashTable.searchHash(str, HashTable.getHead());
-        mainMenu();
+        HashTable.searchHash(str);
     }
     void listAll()
     {
         CLEAR;
-        HashTable.listAll(HashTable.getHead());
-        mainMenu();
+        HashTable.listAll();
     }
     void delHash()
     {
         CLEAR;
         size_t index;
         std::cout << "Enter index to delete : "; std::cin >> index;
-        HashTable.deleteHash(index, HashTable.getHead());
-        mainMenu();
+        HashTable.deleteHash(index);
     }
 };
 
 int main(int argc, char const* argv[])
 {
     Menu menu;
-    menu.mainMenu();
+    while(!menu.exit)
+        menu.mainMenu();
     return 0;
 }
