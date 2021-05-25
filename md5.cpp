@@ -370,7 +370,7 @@ private:
                 this->hash = md5(str_);
                 this->pNext = pNext_;
             }
-            ~Node(){ delete &str; delete &hash; }
+            ~Node(){ }
 
             void getData()
             {
@@ -397,32 +397,19 @@ public:
     }
     ~List()
     {
-        if(nodeCnt == 0)
-        {
-            delete head;
-        }
-        else
-        {
-            Node *ptr = head;
-            size_t i = 1;
-            while(i < nodeCnt - 1   )
+        while(head != nullptr)
             {
-                delete ptr->pNext;
-                i++;
+                Node *ptr = head->pNext;
+                delete head;
+                head = ptr;
             }
-            delete ptr;
-        }
     }
 
-    Node *getHead(){ return this->head; }
     size_t getSize() { return this->nodeCnt; }
 
     void addHash(std::string data)
     {
-        Node *tmp = new Node();
-        tmp->setString(data);
-        tmp->setHash(md5(data));
-        tmp->pNext = nullptr;
+        Node *tmp = new Node(data, nullptr);
 
         if(head == nullptr)
         {
@@ -460,16 +447,18 @@ public:
             Node *newHead = head->pNext;
             this->head = newHead;
         }
-
-        Node *current = head;
-        Node *prev = new Node;
-        for(size_t i = 1; i < idx; i++)
+        else
         {
-            prev = current;
-            current = current->pNext;
+            Node *current = head;
+            Node *prev = nullptr;
+            for(size_t i = 1; i < idx; i++)
+            {
+                prev = current;
+                current = current->pNext;
+            }
+            prev->pNext = current->pNext;
+            delete current;
         }
-        prev->pNext = current->pNext;
-
         nodeCnt--;
     }
 
@@ -568,5 +557,6 @@ int main(int argc, char const* argv[])
     Menu menu;
     while(!menu.exit)
         menu.mainMenu();
+
     return 0;
 }
