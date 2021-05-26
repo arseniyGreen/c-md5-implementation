@@ -434,7 +434,7 @@ public:
             else
                 ptr = ptr->pNext;
             if(ptr == nullptr) 
-                std::cerr << "No proper hash found.\n";
+                std::cout << "No proper hash found.\n";
         }
     }
 
@@ -442,31 +442,38 @@ public:
     {
         if(head == nullptr) return;
 
-        if(idx == 1) /* Удаляем head узел */
+        if(idx > 0 && idx <= nodeCnt) /* Проверяем введёный индекс */
         {
-            Node *newHead = head->pNext;
-            this->head = newHead;
+            if(idx == 1) /* Удаляем head узел */
+            {
+                Node *newHead = head->pNext;
+                this->head = newHead;
+            }
+            else
+            {
+                Node *current = head;
+                Node *prev = nullptr;
+                for(size_t i = 0; i < idx - 1; i++)
+                {
+                    prev = current;
+                    current = current->pNext;
+                }
+                prev->pNext = current->pNext;
+                delete current;
+            }
+            nodeCnt--;
         }
         else
         {
-            Node *current = head;
-            Node *prev = nullptr;
-            for(size_t i = 1; i < idx; i++)
-            {
-                prev = current;
-                current = current->pNext;
-            }
-            prev->pNext = current->pNext;
-            delete current;
-        }
-        nodeCnt--;
+            std::cerr << "Invalid index!\n";
+        }   
     }
 
     void listAll()
     {   
         if(nodeCnt == 0)
         {
-            std::cerr << "List is empty!\n";
+            std::cout << "List is empty!\n";
         }
         else
         {
